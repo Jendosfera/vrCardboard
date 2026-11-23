@@ -43,7 +43,7 @@ jobs:
           EOF
 
       - name: Экспортируем APK через godot-export
-        uses: firebelley/godot-export@v6
+        uses: firebelley/godot-export@v5
         with:
           godot_executable_path: /home/runner/bin/godot
           godot_export_templates_path: /home/runner/.local/share/godot/export_templates
