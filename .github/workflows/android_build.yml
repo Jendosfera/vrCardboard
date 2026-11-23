@@ -26,11 +26,19 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Настраиваем Android SDK, Java и ключ подписи
+      - name: Настраиваем Android SDK, Java и абсолютные пути к ключам
         run: |
-          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
+          
+          # Заменяем res://debug.keystore на реальный абсолютный путь в export_presets.cfg
+          sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
+          
+          # Проверяем, где лежат шаблоны экспорта, и дублируем их во все возможные папки Godot 4.6
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          find ~/.local/share/godot/export_templates -type f -exec cp -n {} ~/.local/share/godot/export_templates/4.6.stable/ \; || true
+          
           mkdir -p ~/.config/godot
-          cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
+          cat <<EOF > ~/.config/godot/editor_settings-4.tres
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
@@ -40,6 +48,7 @@ jobs:
           export/android/debug_keystore_user = "androiddebugkey"
           export/android/debug_keystore_pass = "android"
           EOF
+          cp ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.6.tres
 
       - name: Собираем APK
         run: |
