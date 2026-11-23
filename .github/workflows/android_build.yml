@@ -8,27 +8,33 @@ on:
 jobs:
   export-android:
     runs-on: ubuntu-latest
-    container:
-      image: barichello/godot-ci:4.6
+
     steps:
       - name: Скачиваем код игры
         uses: actions/checkout@v4
 
-      - name: Настраиваем шаблоны, Java SDK и ключ подписи
+      - name: Настраиваем Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Устанавливаем Godot 4.6 и шаблоны
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.6.0
+          use-dotnet: false
+          include-templates: true
+
+      - name: Настраиваем Android SDK, Java и ключ подписи
         run: |
-          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
-          find /root/.local/share/godot/export_templates -type f -exec mv {} ~/.local/share/godot/export_templates/4.6.stable/ \; || true
-          ls -la ~/.local/share/godot/export_templates/4.6.stable/
-          
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          
-          JAVA_PATH=$(dirname $(dirname $(readlink -f $(which java))))
           mkdir -p ~/.config/godot
           cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
-          export/android/java_sdk_path = "$JAVA_PATH"
+          export/android/java_sdk_path = "$JAVA_HOME"
           export/android/android_sdk_path = "$ANDROID_HOME"
           export/android/debug_keystore = "$GITHUB_WORKSPACE/debug.keystore"
           export/android/debug_keystore_user = "androiddebugkey"
