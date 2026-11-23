@@ -33,7 +33,7 @@ jobs:
           sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
           
           mkdir -p ~/.config/godot
-          cat <<EOF >> ~/.config/godot/editor_settings-4.6.tres
+          cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
