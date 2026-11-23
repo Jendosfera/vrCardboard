@@ -26,8 +26,12 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Генерируем валидный export_presets.cfg (Gradle) и настройки SDK
+      - name: Распаковываем Android Build Template и настраиваем SDK
         run: |
+          mkdir -p android/build
+          unzip -q ~/.local/share/godot/export_templates/4.6.stable/android_source.zip -d android/build
+          echo "4.6.stable" > android/.build_version
+
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           
           cat <<EOF > export_presets.cfg
