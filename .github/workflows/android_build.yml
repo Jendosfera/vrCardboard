@@ -37,13 +37,27 @@ jobs:
           name="Pack"
           platform="Linux"
           runnable=true
+          advanced_options=false
+          dedicated_server=false
+          custom_features=""
           export_filter="all_resources"
-          export_path="android/build/assets/main.pack"
+          include_filter=""
+          exclude_filter=""
+          export_path="android/build/assets/main.pck"
+          encryption_include_filters=""
+          encryption_exclude_filters=""
+          encrypt_pck=false
+          encrypt_directory=false
+
+          [preset.0.options]
+
+          binary_format/architecture="x86_64"
           EOF
 
           mkdir -p android/build/assets
-          godot --headless --export-pack "Pack" android/build/assets/main.pack
-          ls -lh android/build/assets/main.pack
+          godot --headless --export-pack "Pack" android/build/assets/main.pck
+          cp android/build/assets/main.pck android/build/assets/main.pack
+          ls -lh android/build/assets/
 
           cd android/build
           chmod +x gradlew
