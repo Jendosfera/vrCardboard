@@ -26,20 +26,32 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Собираем APK напрямую через Gradle
+      - name: Упаковываем игру и собираем APK через Gradle
         run: |
           mkdir -p android/build
           unzip -q ~/.local/share/godot/export_templates/4.6.stable/android_source.zip -d android/build
           
+          cat <<EOF > export_presets.cfg
+          [preset.0]
+
+          name="Pack"
+          platform="Linux"
+          runnable=true
+          export_filter="all_resources"
+          export_path="android/build/assets/main.pack"
+          EOF
+
           mkdir -p android/build/assets
-          godot --headless --export-pack "Android" android/build/assets/main.pack || godot --headless --pack android/build/assets/main.pack || true
-          
+          godot --headless --export-pack "Pack" android/build/assets/main.pack
+          ls -lh android/build/assets/main.pack
+
           cd android/build
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleStandardDebug
+          find build/outputs/apk -name "*.apk"
 
       - name: Загружаем готовый APK
         uses: actions/upload-artifact@v4
         with:
           name: vr-shooter-apk
-          path: android/build/build/outputs/apk/debug/*.apk
+          path: android/build/build/outputs/apk/**/*.apk
