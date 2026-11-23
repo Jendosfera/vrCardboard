@@ -26,11 +26,51 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Настраиваем ключи и SDK
+      - name: Генерируем валидный export_presets.cfg и настройки SDK
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
           
+          cat <<EOF > export_presets.cfg
+          [preset.0]
+
+          name="Android"
+          platform="Android"
+          runnable=true
+          advanced_options=false
+          dedicated_server=false
+          custom_features=""
+          export_filter="all_resources"
+          include_filter=""
+          exclude_filter=""
+          export_path="build/android/vr_shooter.apk"
+          encryption_include_filters=""
+          encryption_exclude_filters=""
+          encrypt_pck=false
+          encrypt_directory=false
+
+          [preset.0.options]
+
+          gradle_build/use_gradle_build=false
+          gradle_build/export_format=0
+          architectures/armeabi-v7a=false
+          architectures/arm64-v8a=true
+          architectures/x86=false
+          architectures/x86_64=false
+          package/unique_name="com.mygame.vrshooter"
+          package/name="VR Shooter"
+          version/code=1
+          version/name="1.0"
+          version/min_sdk=24
+          version/target_sdk=34
+          xr_features/xr_mode=0
+          keystore/debug="$GITHUB_WORKSPACE/debug.keystore"
+          keystore/debug_user="androiddebugkey"
+          keystore/debug_password="android"
+          keystore/release="$GITHUB_WORKSPACE/debug.keystore"
+          keystore/release_user="androiddebugkey"
+          keystore/release_password="android"
+          EOF
+
           mkdir -p ~/.config/godot
           cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
           [gd_resource type="EditorSettings" format=3]
