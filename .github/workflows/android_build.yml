@@ -16,13 +16,13 @@ jobs:
 
       - name: Настраиваем шаблоны, Java SDK и ключ подписи
         run: |
-          mkdir -v -p ~/.local/share/godot/export_templates/
-          mv /root/.local/share/godot/export_templates/* ~/.local/share/godot/export_templates/ || true
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          find /root/.local/share/godot/export_templates -type f -exec mv {} ~/.local/share/godot/export_templates/4.6.stable/ \; || true
+          ls -la ~/.local/share/godot/export_templates/4.6.stable/
+          
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           
           JAVA_PATH=$(dirname $(dirname $(readlink -f $(which java))))
-          echo "Найден Java SDK: $JAVA_PATH"
-          
           mkdir -p ~/.config/godot
           cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
           [gd_resource type="EditorSettings" format=3]
@@ -37,8 +37,8 @@ jobs:
 
       - name: Собираем APK
         run: |
-          mkdir -v -p build/android
-          godot --headless --verbose --export-debug "Android" build/android/vr_shooter.apk
+          mkdir -p build/android
+          godot --headless --verbose --export-release "Android" build/android/vr_shooter.apk
 
       - name: Загружаем готовый APK
         uses: actions/upload-artifact@v4
