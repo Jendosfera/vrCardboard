@@ -26,11 +26,13 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Проверяем шаблоны и настраиваем SDK
+      - name: Подготавливаем шаблоны, SDK и ключи
         run: |
-          echo "=== Где лежат шаблоны ==="
-          find ~/.local/share/godot -maxdepth 4
-          
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          find ~/.local/share/godot/export_templates -type f -exec cp -n {} ~/.local/share/godot/export_templates/4.6.stable/ \; || true
+          echo "=== Файлы в папке шаблонов 4.6.stable ==="
+          ls -la ~/.local/share/godot/export_templates/4.6.stable/
+
           godot --headless --import || true
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
@@ -48,9 +50,14 @@ jobs:
           EOF
 
       - name: Собираем APK
+        env:
+          GODOT_ANDROID_KEYSTORE_DEBUG_PATH: ${{ github.workspace }}/debug.keystore
+          GODOT_ANDROID_KEYSTORE_DEBUG_USER: androiddebugkey
+          GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD: android
+          GODOT_ANDROID_KEYSTORE_RELEASE_PATH: ${{ github.workspace }}/debug.keystore
+          GODOT_ANDROID_KEYSTORE_RELEASE_USER: androiddebugkey
+          GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD: android
         run: |
-          echo "=== Содержимое export_presets.cfg ==="
-          cat export_presets.cfg
           mkdir -p build/android
           godot --headless --verbose --export-debug "Android" build/android/vr_shooter.apk
 
