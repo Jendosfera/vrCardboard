@@ -26,7 +26,7 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Настраиваем ключи и проверяем конфигурацию
+      - name: Настраиваем ключи и проверяем пути
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
@@ -45,16 +45,14 @@ jobs:
 
           cat <<EOF > check_export.gd
           @tool
-          extends EditorScript
-          func _run():
-              for i in range(EditorExportPlatformAndroid.get_export_presets_count() if ClassDB.class_exists("EditorExportPlatformAndroid") else 0):
-                  pass
+          extends SceneTree
+          func _init():
               print("JAVA_HOME=", OS.get_environment("JAVA_HOME"))
               print("ANDROID_HOME=", OS.get_environment("ANDROID_HOME"))
-              print("EDITOR_JAVA=", EditorInterface.get_editor_settings().get_setting("export/android/java_sdk_path"))
-              print("EDITOR_ANDROID=", EditorInterface.get_editor_settings().get_setting("export/android/android_sdk_path"))
+              print("KEYSTORE_EXISTS=", FileAccess.file_exists("res://debug.keystore"))
+              quit()
           EOF
-          godot --headless --editor --quit --script check_export.gd || true
+          godot --headless --script check_export.gd
 
       - name: Собираем APK
         run: |
