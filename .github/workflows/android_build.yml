@@ -8,9 +8,6 @@ on:
 jobs:
   export-android:
     runs-on: ubuntu-latest
-    env:
-      GODOT_VERSION: "4.6"
-      EXPORT_NAME: "Android"
 
     steps:
       - name: Скачиваем код игры
@@ -22,21 +19,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Скачиваем Godot и шаблоны экспорта
+      - name: Скачиваем Godot 4.6 и шаблоны экспорта
         run: |
-          wget -q "https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
-          wget -q "https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
-          unzip -q "Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
-          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          wget -q https://github.com
+          wget -q https://github.com
+          unzip -q Godot_v4.6-stable_linux.x86_64.zip
+          mv Godot_v4.6-stable_linux.x86_64 /usr/local/bin/godot
           chmod +x /usr/local/bin/godot
-          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          unzip -q "Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
-          mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          unzip -q Godot_v4.6-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/4.6.stable/
 
       - name: Собираем APK
         run: |
           mkdir -p build/android
-          godot --headless --verbose --export-debug "$EXPORT_NAME" build/android/vr_shooter.apk
+          godot --headless --verbose --export-debug "Android" build/android/vr_shooter.apk
 
       - name: Загружаем готовый APK для скачивания
         uses: actions/upload-artifact@v4
