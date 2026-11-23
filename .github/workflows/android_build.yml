@@ -3,14 +3,14 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-  workflow_dispatch: # Позволяет запускать сборку вручную кнопкой на сайте
+  workflow_dispatch:
 
 jobs:
   export-android:
     runs-on: ubuntu-latest
     env:
-      GODOT_VERSION: 4.6 # <-- Укажите вашу версию Godot (например: 4.3, 4.4)
-      EXPORT_NAME: Android # Должно совпадать с названием пресета в Godot
+      GODOT_VERSION: "4.6"
+      EXPORT_NAME: "Android"
 
     steps:
       - name: Скачиваем код игры
@@ -24,13 +24,13 @@ jobs:
 
       - name: Скачиваем Godot и шаблоны экспорта
         run: |
-          wget -q https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
-          wget -q https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
-          unzip -q Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
-          mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
+          wget -q "https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          wget -q "https://github.com{GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q "Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
           chmod +x /usr/local/bin/godot
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          unzip -q Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip -q "Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
           mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
       - name: Собираем APK
