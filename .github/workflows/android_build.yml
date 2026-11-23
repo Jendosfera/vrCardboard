@@ -26,20 +26,27 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Создаем ключ подписи
+      - name: Настраиваем ключи и SDK
         run: |
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           sed -i "s|res://debug.keystore|$GITHUB_WORKSPACE/debug.keystore|g" export_presets.cfg
+          
+          mkdir -p ~/.config/godot
+          cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
+          [gd_resource type="EditorSettings" format=3]
 
-      - name: Экспортируем APK
-        uses: firebelley/godot-export@v4
-        with:
-          godot_executable_path: /home/runner/bin/godot
-          godot_export_templates_path: /home/runner/.local/share/godot/export_templates
-          relative_project_path: ./
-          preset_name: Android
-          export_path: build/android/vr_shooter.apk
-          debug_export: true
+          [resource]
+          export/android/java_sdk_path = "$JAVA_HOME"
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/debug_keystore = "$GITHUB_WORKSPACE/debug.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EOF
+
+      - name: Собираем APK
+        run: |
+          mkdir -p build/android
+          godot --headless --export-debug "Android" build/android/vr_shooter.apk
 
       - name: Загружаем готовый APK
         uses: actions/upload-artifact@v4
