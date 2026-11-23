@@ -8,43 +8,21 @@ on:
 jobs:
   export-android:
     runs-on: ubuntu-latest
-
+    container:
+      image: barichello/godot-ci:4.6
     steps:
       - name: Скачиваем код игры
         uses: actions/checkout@v4
 
-      - name: Настраиваем Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Устанавливаем Godot 4.6 и шаблоны
-        uses: chickensoft-games/setup-godot@v2
-        with:
-          version: 4.6.0
-          use-dotnet: false
-          include-templates: true
-
-      - name: Настраиваем Android SDK, Java и ключ подписи
+      - name: Настраиваем шаблоны и ключ подписи
         run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/* ~/.local/share/godot/export_templates/ || true
           keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore debug.keystore -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
-          mkdir -p ~/.config/godot
-          cat <<EOF > ~/.config/godot/editor_settings-4.tres
-          [gd_resource type="EditorSettings" format=3]
-
-          [resource]
-          export/android/java_sdk_path = "$JAVA_HOME"
-          export/android/android_sdk_path = "$ANDROID_HOME"
-          export/android/debug_keystore = "$GITHUB_WORKSPACE/debug.keystore"
-          export/android/debug_keystore_user = "androiddebugkey"
-          export/android/debug_keystore_pass = "android"
-          EOF
-          cp ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.6.tres
 
       - name: Собираем APK
         run: |
-          mkdir -p build/android
+          mkdir -v -p build/android
           godot --headless --verbose --export-debug "Android" build/android/vr_shooter.apk
 
       - name: Загружаем готовый APK
