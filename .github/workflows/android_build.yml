@@ -26,74 +26,20 @@ jobs:
           use-dotnet: false
           include-templates: true
 
-      - name: Распаковываем Android Build Template и настраиваем SDK
+      - name: Собираем APK напрямую через Gradle
         run: |
           mkdir -p android/build
           unzip -q ~/.local/share/godot/export_templates/4.6.stable/android_source.zip -d android/build
-          echo "4.6.stable" > android/.build_version
-
-          keytool -keyalg RSA -genkeypair -alias androiddebugkey -keypass android -keystore "$GITHUB_WORKSPACE/debug.keystore" -storepass android -dname "CN=Android Debug,O=Android,C=US" -validity 9999
           
-          cat <<EOF > export_presets.cfg
-          [preset.0]
-
-          name="Android"
-          platform="Android"
-          runnable=true
-          advanced_options=false
-          dedicated_server=false
-          custom_features=""
-          export_filter="all_resources"
-          include_filter=""
-          exclude_filter=""
-          export_path="build/android/vr_shooter.apk"
-          encryption_include_filters=""
-          encryption_exclude_filters=""
-          encrypt_pck=false
-          encrypt_directory=false
-
-          [preset.0.options]
-
-          gradle_build/use_gradle_build=true
-          gradle_build/export_format=0
-          gradle_build/min_sdk="24"
-          gradle_build/target_sdk="34"
-          architectures/armeabi-v7a=false
-          architectures/arm64-v8a=true
-          architectures/x86=false
-          architectures/x86_64=false
-          package/unique_name="com.mygame.vrshooter"
-          package/name="VR Shooter"
-          version/code=1
-          version/name="1.0"
-          xr_features/xr_mode=0
-          keystore/debug="$GITHUB_WORKSPACE/debug.keystore"
-          keystore/debug_user="androiddebugkey"
-          keystore/debug_password="android"
-          keystore/release="$GITHUB_WORKSPACE/debug.keystore"
-          keystore/release_user="androiddebugkey"
-          keystore/release_password="android"
-          EOF
-
-          mkdir -p ~/.config/godot
-          cat <<EOF > ~/.config/godot/editor_settings-4.6.tres
-          [gd_resource type="EditorSettings" format=3]
-
-          [resource]
-          export/android/java_sdk_path = "$JAVA_HOME"
-          export/android/android_sdk_path = "$ANDROID_HOME"
-          export/android/debug_keystore = "$GITHUB_WORKSPACE/debug.keystore"
-          export/android/debug_keystore_user = "androiddebugkey"
-          export/android/debug_keystore_pass = "android"
-          EOF
-
-      - name: Собираем APK
-        run: |
-          mkdir -p build/android
-          godot --headless --export-debug "Android" build/android/vr_shooter.apk
+          mkdir -p android/build/assets
+          godot --headless --export-pack "Android" android/build/assets/main.pack || godot --headless --pack android/build/assets/main.pack || true
+          
+          cd android/build
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Загружаем готовый APK
         uses: actions/upload-artifact@v4
         with:
           name: vr-shooter-apk
-          path: build/android/vr_shooter.apk
+          path: android/build/build/outputs/apk/debug/*.apk
