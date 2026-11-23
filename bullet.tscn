@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://c37ft4xuodgw4"]
+
+[ext_resource type="Script" uid="uid://7dg2i24rwu4c" path="res://projectile.gd" id="1_v7oki"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v8qja"]
+emission_enabled = true
+emission = Color(0.9882353, 0.9882353, 0.11372549, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_t4vbm"]
+material = SubResource("StandardMaterial3D_v8qja")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2b2rl"]
+radius = 0.06
+
+[node name="bullet" type="Area3D" unique_id=639922163]
+script = ExtResource("1_v7oki")
+speed = 45.0
+damage = 8.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=647493919]
+mesh = SubResource("SphereMesh_t4vbm")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=268102442]
+shape = SubResource("SphereShape3D_2b2rl")
