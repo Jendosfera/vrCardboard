@@ -50,10 +50,17 @@ jobs:
           EOF
           cp ~/.config/godot/editor_settings-4.tres ~/.config/godot/editor_settings-4.6.tres
 
-      - name: Собираем APK
+            - name: Собираем APK
         run: |
+          echo "=== Проверка шаблонов ==="
+          ls -la ~/.local/share/godot/export_templates/4.6.stable/
+          echo "=== Проверка export_presets.cfg ==="
+          cat export_presets.cfg
+          echo "=== Проверка Android SDK ==="
+          ls -la "$ANDROID_HOME/build-tools/"
           mkdir -p build/android
           godot --headless --verbose --export-release "Android" build/android/vr_shooter.apk
+
 
       - name: Загружаем готовый APK
         uses: actions/upload-artifact@v4
