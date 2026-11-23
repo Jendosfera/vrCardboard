@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c37ft4xuodgw4"]
 
-[ext_resource type="Script" uid="uid://7dg2i24rwu4c" path="res://projectile.gd" id="1_v7oki"]
+[ext_resource type="Script" uid="uid://7dg2i24rwu4c" path="res://projectile.gd" id="1_ayd6b"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v8qja"]
 emission_enabled = true
@@ -15,7 +15,7 @@ height = 0.1
 radius = 0.06
 
 [node name="bullet" type="Area3D" unique_id=639922163]
-script = ExtResource("1_v7oki")
+script = ExtResource("1_ayd6b")
 speed = 45.0
 damage = 8.0
 

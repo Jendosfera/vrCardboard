@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="VR 360 Cardboard"
-run/main_scene="uid://dntfnvts42m5q"
+run/main_scene="res://World.tscn"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 

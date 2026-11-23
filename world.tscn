@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dntfnvts42m5q"]
 
-[ext_resource type="PackedScene" uid="uid://iaa517rdwo0f" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="PackedScene" uid="uid://iaa517rdwo0f" path="res://player.tscn" id="1_c6gwx"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_fj7yv"]
 size = Vector3(20, 1, 20)
@@ -8,7 +8,7 @@ size = Vector3(20, 1, 20)
 [sub_resource type="BoxShape3D" id="BoxShape3D_tlwt5"]
 size = Vector3(20, 1, 20)
 
-[node name="world" type="Node3D" unique_id=2112795477]
+[node name="World" type="Node3D" unique_id=2112795477]
 metadata/_edit_group_ = true
 
 [node name="floor" type="StaticBody3D" parent="." unique_id=245738629]
@@ -22,5 +22,5 @@ shape = SubResource("BoxShape3D_tlwt5")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1283572017]
 transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
 
-[node name="Player" parent="." unique_id=993612163 instance=ExtResource("1_f3sb7")]
+[node name="Player" parent="." unique_id=993612163 instance=ExtResource("1_c6gwx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)

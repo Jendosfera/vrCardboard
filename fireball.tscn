@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b4emkm0vtcaho"]
 
-[ext_resource type="Script" uid="uid://7dg2i24rwu4c" path="res://projectile.gd" id="1_sf4mh"]
+[ext_resource type="Script" uid="uid://7dg2i24rwu4c" path="res://projectile.gd" id="1_yn1k2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_olwj8"]
 emission_enabled = true
@@ -12,7 +12,7 @@ radius = 0.25
 height = 0.5
 
 [node name="fireball" type="Area3D" unique_id=403647312]
-script = ExtResource("1_sf4mh")
+script = ExtResource("1_yn1k2")
 speed = 18.0
 damage = 40.0
 

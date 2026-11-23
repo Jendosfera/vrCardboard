@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://iaa517rdwo0f"]
 
-[ext_resource type="Script" uid="uid://rg6dlgio5xf0" path="res://player.gd" id="1_4flbx"]
-[ext_resource type="PackedScene" uid="uid://c37ft4xuodgw4" path="res://bullet.tscn" id="2_i3pqv"]
-[ext_resource type="PackedScene" uid="uid://b4emkm0vtcaho" path="res://fireball.tscn" id="3_hqtel"]
+[ext_resource type="Script" uid="uid://rg6dlgio5xf0" path="res://player.gd" id="1_kne1u"]
+[ext_resource type="PackedScene" path="res://bullet.tscn" id="2_e80uo"]
+[ext_resource type="PackedScene" path="res://fireball.tscn" id="3_cxr5p"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
 
@@ -14,10 +14,10 @@ material = SubResource("StandardMaterial3D_sweqy")
 radius = 0.01
 height = 0.02
 
-[node name="PlayerD)" type="CharacterBody3D" unique_id=993612163]
-script = ExtResource("1_4flbx")
-bullet_scene = ExtResource("2_i3pqv")
-magic_scene = ExtResource("3_hqtel")
+[node name="Player" type="CharacterBody3D" unique_id=993612163]
+script = ExtResource("1_kne1u")
+bullet_scene = ExtResource("2_e80uo")
+magic_scene = ExtResource("3_cxr5p")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=225934982]
 shape = SubResource("CapsuleShape3D_sh265")
